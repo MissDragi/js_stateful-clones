@@ -13,20 +13,25 @@ function transformStateWithClones(state, actions) {
   let currentState = { ...state };
 
   for (const action of actions) {
-    if (action.type === 'addProperties') {
-      currentState = { ...currentState, ...action.extraData };
-    }
+    switch (action.type) {
+      case 'addProperties':
+        currentState = { ...currentState, ...action.extraData };
+        break;
 
-    if (action.type === 'removeProperties') {
-      currentState = Object.fromEntries(
-        Object.entries(currentState).filter(
-          ([key]) => !action.keysToRemove.includes(key),
-        ),
-      );
-    }
+      case 'removeProperties':
+        currentState = Object.fromEntries(
+          Object.entries(currentState).filter(
+            ([key]) => !action.keysToRemove.includes(key),
+          ),
+        );
+        break;
 
-    if (action.type === 'clear') {
-      currentState = {};
+      case 'clear':
+        currentState = {};
+        break;
+
+      default:
+        throw new Error(`Unexpected action type: ${action.type}`);
     }
 
     stateHistory.push({ ...currentState });
